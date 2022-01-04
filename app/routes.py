@@ -17,7 +17,7 @@ def read_board():
     boards_response = []
     for board in boards:
         boards_response.append({
-            "board_id": board.id,
+            "board_id": board.board_id,
             "title": board.title,
             "owner": board.owner
         })
@@ -51,16 +51,16 @@ def get_cards_for_specific_board(board_id):
     if board is None:
         return make_response("not found", 404)
 
-    cards = Card.query.filter(Card.board_id==board_id).all() 
+    cards = Card.query.filter(Card.board_id_fk==board_id).all() 
     response = []
 
     for card in cards:
         #make a helper function in the model "to_dictionary"
             card_dict = {
             "card_id": card.card_id,
-            "message": card.message_id,
+            "message": card.message,
             "likes_count": card.likes_count,
-            "board_id": card.board_id
+            "board_id": card.board_id_fk
             }
             
             response.append(card_dict)
@@ -78,7 +78,7 @@ def post_card_to_board(board_id):
     request_body = request.get_json()
     new_card = Card(message=request_body["message"],
         likes_count=0,
-        board_id=board.board_id) #this may raise error
+        board_id_fk=board.board_id) #this may raise error
 
     db.session.add(new_card)
     db.session.commit()
@@ -91,10 +91,10 @@ def delete_a_card(card_id):
     card = Card.query.get(card_id)
     if card is None:
         return make_response(f"Card {card_id} not found", 404)
-    response = {f'Card {card.card_id} successfully deleted'}
+    # response = {f'Card {card.card_id} successfully deleted'}
     db.session.delete(card)
     db.session.commit()
-    return make_response(response, 200)
+    return make_response(f'Card {card.card_id} successfully deleted', 200)
 
 # PUT /cards/<card_id>/like
 @cards_bp.route("/<card_id>/like", methods=["PUT"])
@@ -104,8 +104,8 @@ def update_a_card(card_id):
     if card is None:
         return make_response(f"Card {card_id} not found", 404)
     
-    form_data = request.get_json()
-    card.message = form_data["message"]
+    # form_data = request.get_json()
+    # card.message = form_data["message"]
     card.likes_count+=1
     #card.likes_count = form_data["likes_count"]
 
@@ -113,8 +113,37 @@ def update_a_card(card_id):
     
     response = {
         "card_id": card.card_id,
-        "message": card.message_id,
+        "message": card.message,
         "likes_count": card.likes_count,
-        "board_id": card.board_id
+        "board_id": card.board_id_fk
     }
     return make_response(response, 200)
+
+
+
+@cards_bp.route("", methods=["GET"])
+def get_cards_for_specific_board_test(): 
+
+    #get the board b/c we need its details
+    #get cards that have that board id 
+    #if no cards have that board id, return a specific response 
+
+    
+    #error check
+    
+
+    cards = Card.query.all() 
+    response = []
+
+    for card in cards:
+        #make a helper function in the model "to_dictionary"
+            card_dict = {
+            "card_id": card.card_id,
+            "message": card.message,
+            "likes_count": card.likes_count,
+            "board_id": card.board_id_fk
+            }
+            
+            response.append(card_dict)
+    
+    return jsonify(response, 200)

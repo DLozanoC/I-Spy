@@ -17,7 +17,7 @@ def read_board():
     boards_response = []
     for board in boards:
         boards_response.append({
-            "id": board.id,
+            "board_id": board.id,
             "title": board.title,
             "owner": board.owner
         })

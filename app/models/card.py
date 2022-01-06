@@ -7,6 +7,13 @@ class Card(db.Model):
     likes_count = db.Column(db.Integer)
     board_id_fk = db.Column(db.Integer, db.ForeignKey('board.board_id'), nullable=True)
 
+    def to_dict(self):
+        return {
+            "id":self.card_id,
+            "message": self.message,
+            "likes" : self.likes_count
+        }
+
 #goal_id_fk = db.Column(db.Integer, db.ForeignKey('goals.goal_id'), nullable=True)
 
 # Card, table name: card

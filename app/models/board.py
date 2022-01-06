@@ -8,4 +8,10 @@ class Board(db.Model):
     cards = db.relationship('Card', backref='board')
 
 
+    def to_dict(self):
+        return {"board_id": self.board_id,
+            "title": self.title,
+            "owner": self.owner}
+
+
 #tasks = db.relationship('Task', backref='goal', lazy=True)

@@ -16,11 +16,9 @@ def read_board():
     boards = Board.query.all()
     boards_response = []
     for board in boards:
-        boards_response.append({
-            "board_id": board.board_id,
-            "title": board.title,
-            "owner": board.owner
-        })
+        boards_response.append(board.to_dict())
+            
+        
     return jsonify(boards_response)
 
 # POST /boards
@@ -33,7 +31,7 @@ def create_board():
     db.session.add(new_board)
     db.session.commit()
 
-    return make_response(f"Board {new_board.title} successfully created", 201)
+    return jsonify(new_board.to_dict())
 
 
 #<--------------- #GET & POST card(s) for a single board --------------->

@@ -1,7 +1,6 @@
 from flask import Blueprint, request, jsonify, make_response
 from app import db
 from app.models.game import Game
-# from app.models.message import Message
 from app.models.player import Player
 
 # example_bp = Blueprint('example_bp', __name__)
@@ -19,7 +18,7 @@ def read_player():
     players_response = []
     for player in players:
         players_response.append(player.to_dict())
-            
+
     return jsonify(players_response)
 
 # POST /players (create player)
@@ -46,16 +45,19 @@ def create_player():
 
 #<--------------- #GET POST & DELETE GAMES --------------->
 # GET /games - Read game
-@games_bp.route("", methods=["GET"])
-def read_game():
+# 405 Method Not Allowed - When I changed the route to check the games of a certain player
+# it worked when the route was just /games but I need it to be specific
+@games_bp.route("players/<player_id>/games", methods=["GET"])
+def read_game(player_id):
     games = Game.query.all()
     games_response = []
+    player = Player.query.get(player_id)
     for game in games:
         games_response.append(game.to_dict())
             
     return jsonify(games_response)
 
-# POST /players/<player_id>/games - Create game from players id
+# POST /players/<player_id>/games - Create game from players id ------WORKS!
 @players_bp.route("/<player_id>/games", methods=["POST"])
 def post_game_to_player(player_id):
     player = Player.query.get(player_id) 
@@ -72,7 +74,8 @@ def post_game_to_player(player_id):
 
     return make_response(f"Game {new_game.game_id} successfully created", 201)
 
-#DELETE /games/<game_id>
+#DELETE /games/<game_id> -----WORKS!
+# Can I change it so the route includes the player id? Maybe it won't work like the GET for games
 @games_bp.route("/<game_id>", methods=["DELETE"])
 def delete_a_game(game_id):
     game = Game.query.get(game_id)
@@ -84,7 +87,7 @@ def delete_a_game(game_id):
     return make_response(f'Game {game.game_id} successfully deleted', 200)
 
 #PUT GAME rating
-@games_bp.route("/<game_id>/rating", methods=["PUT"])
+@games_bp.route("/<player_id>/<game_id>", methods=["PUT"])
 def update_a_game(game_id):
     game = Game.query.get(game_id)
     

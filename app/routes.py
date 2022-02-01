@@ -33,6 +33,17 @@ def create_player():
 
     return jsonify(new_player.to_dict())
 
+#DELETE PLAYER - NOT WORKING ON POSTMAN
+# @players_bp.route("/<player_id>", methods=["DELETE"])
+# def delete_a_player(player_id):
+#     player = Player.query.get(player_id)
+#     if player is None:
+#         return make_response(f"Player {player_id} not found", 404)
+    
+#     db.session.delete(player)
+#     db.session.commit()
+#     return make_response(f'Game {player.player_id} successfully deleted', 200)
+
 #<--------------- #GET POST & DELETE GAMES --------------->
 # GET /games - Read game
 @games_bp.route("", methods=["GET"])
@@ -85,7 +96,7 @@ def update_a_game(game_id):
     
     response = {
         "game_id": game.game_id,
-        "rating_count": game.rating_count,
+        # "rating_count": game.rating_count,
         "player_id": game.player_id_fk
     }
     return make_response(response, 200)

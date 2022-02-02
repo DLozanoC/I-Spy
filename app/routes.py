@@ -47,59 +47,64 @@ def create_player():
 # GET /games - Read game
 # 405 Method Not Allowed - When I changed the route to check the games of a certain player
 # it worked when the route was just /games but I need it to be specific
-@games_bp.route("players/<player_id>/games", methods=["GET"])
-def read_game(player_id):
-    games = Game.query.all()
-    games_response = []
-    player = Player.query.get(player_id)
-    for game in games:
-        games_response.append(game.to_dict())
+# @games_bp.route("players/<player_id>/games", methods=["GET"])
+# def read_game(player_id):
+#     #games = Game.query.all()
+#     player = Player.query.get(player_id)
+
+#     if player is None:
+#         return make_response("Game not found", 404)
+
+#     games = Game.query.filter(Game.player_id_fk==player_id).all()
+#     games_response = []
+#     for game in games:
+#         games_response.append(game.to_dict())
             
-    return jsonify(games_response)
+#     return jsonify(games_response, 200)
 
 # POST /players/<player_id>/games - Create game from players id ------WORKS!
-@players_bp.route("/<player_id>/games", methods=["POST"])
-def post_game_to_player(player_id):
-    player = Player.query.get(player_id) 
+# @players_bp.route("/<player_id>/games", methods=["POST"])
+# def post_game_to_player(player_id):
+#     player = Player.query.get(player_id) 
 
-    if player is None: #error checking
-        return make_response("Player Not Found", 404)
+#     if player is None: #error checking
+#         return make_response("Player Not Found", 404)
 
-    request_body = request.get_json()
-    new_game = Game(game_id=request_body["game_id"],
-        player_id_fk=player.player_id) #this may raise error
+#     request_body = request.get_json()
+#     new_game = Game(game_id=request_body["game_id"],
+#         player_id_fk=player.player_id) #this may raise error
 
-    db.session.add(new_game)
-    db.session.commit()
+#     db.session.add(new_game)
+#     db.session.commit()
 
-    return make_response(f"Game {new_game.game_id} successfully created", 201)
+#     return make_response(f"Game {new_game.game_id} successfully created", 201)
 
 #DELETE /games/<game_id> -----WORKS!
 # Can I change it so the route includes the player id? Maybe it won't work like the GET for games
-@games_bp.route("/<game_id>", methods=["DELETE"])
-def delete_a_game(game_id):
-    game = Game.query.get(game_id)
-    if game is None:
-        return make_response(f"Game {game_id} not found", 404)
+# @games_bp.route("/<game_id>", methods=["DELETE"])
+# def delete_a_game(game_id):
+#     game = Game.query.get(game_id)
+#     if game is None:
+#         return make_response(f"Game {game_id} not found", 404)
     
-    db.session.delete(game)
-    db.session.commit()
-    return make_response(f'Game {game.game_id} successfully deleted', 200)
+#     db.session.delete(game)
+#     db.session.commit()
+#     return make_response(f'Game {game.game_id} successfully deleted', 200)
 
 #PUT GAME rating
-@games_bp.route("/<player_id>/<game_id>", methods=["PUT"])
-def update_a_game(game_id):
-    game = Game.query.get(game_id)
+# @games_bp.route("/<player_id>/<game_id>", methods=["PUT"])
+# def update_a_game(game_id):
+#     game = Game.query.get(game_id)
     
-    if game is None:
-        return make_response(f"Game {game_id} not found", 404)
+#     if game is None:
+#         return make_response(f"Game {game_id} not found", 404)
 
-    game.rating_count+=1
-    db.session.commit()
+#     game.rating_count+=1
+#     db.session.commit()
     
-    response = {
-        "game_id": game.game_id,
-        # "rating_count": game.rating_count,
-        "player_id": game.player_id_fk
-    }
-    return make_response(response, 200)
+#     response = {
+#         "game_id": game.game_id,
+#         # "rating_count": game.rating_count,
+#         "player_id": game.player_id_fk
+#     }
+#     return make_response(response, 200)

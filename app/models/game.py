@@ -6,7 +6,7 @@ class Game(db.Model):
     rating_count = db.Column(db.Integer)
     player_id_fk = db.Column(db.Integer, db.ForeignKey('player.player_id'), nullable=True)
     # Double check if this is allowed so each game shows the name of the players
-    player = db.relationship('Player', backref='game')
+    # player = db.relationship('Player', backref='game')
 
     #receiver = db.Column
     #make sure this is a many to many relationship. Cards should be "player"
@@ -15,7 +15,7 @@ class Game(db.Model):
 
     def to_dict(self):
         return {"game_id": self.game_id,
-            "player": self.player_id_fk,
+            #"player": self.player_id_fk,
             # "cards":[card.to_dict() for card in self.cards],
             }
 

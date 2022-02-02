@@ -4,7 +4,7 @@ class Game(db.Model):
     __tablename__= 'game'
     game_id = db.Column(db.Integer, primary_key=True)
     rating_count = db.Column(db.Integer)
-    player_id_fk = db.Column(db.Integer, db.ForeignKey('player.player_id'), nullable=True)
+    # player_id_fk = db.Column(db.Integer, db.ForeignKey('player.player_id'), nullable=True)
     # Double check if this is allowed so each game shows the name of the players
     # player = db.relationship('Player', backref='game')
 

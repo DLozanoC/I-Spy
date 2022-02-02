@@ -32,22 +32,22 @@ def create_player():
 
     return jsonify(new_player.to_dict())
 
-#DELETE PLAYER - NOT WORKING ON POSTMAN
-# @players_bp.route("/<player_id>", methods=["DELETE"])
-# def delete_a_player(player_id):
-#     player = Player.query.get(player_id)
-#     if player is None:
-#         return make_response(f"Player {player_id} not found", 404)
+#DELETE PLAYER 
+@players_bp.route("/<player_id>", methods=["DELETE"])
+def delete_a_player(player_id):
+    player = Player.query.get(player_id)
+    if player is None:
+        return make_response(f"Player {player_id} not found", 404)
     
-#     db.session.delete(player)
-#     db.session.commit()
-#     return make_response(f'Game {player.player_id} successfully deleted', 200)
+    db.session.delete(player)
+    db.session.commit()
+    return make_response(f'Player {player.player_id} successfully deleted', 200)
 
 #<--------------- #GET POST & DELETE GAMES --------------->
 # GET /games - Read game
 # 405 Method Not Allowed - When I changed the route to check the games of a certain player
 # it worked when the route was just /games but I need it to be specific
-# @games_bp.route("players/<player_id>/games", methods=["GET"])
+# @games_bp.route("/<player_id>/games", methods=["GET"])
 # def read_game(player_id):
 #     #games = Game.query.all()
 #     player = Player.query.get(player_id)
@@ -63,21 +63,20 @@ def create_player():
 #     return jsonify(games_response, 200)
 
 # POST /players/<player_id>/games - Create game from players id ------WORKS!
-# @players_bp.route("/<player_id>/games", methods=["POST"])
-# def post_game_to_player(player_id):
-#     player = Player.query.get(player_id) 
+@players_bp.route("/<player_id>/games", methods=["POST"])
+def post_game_to_player(player_id):
+    player = Player.query.get(player_id) 
 
-#     if player is None: #error checking
-#         return make_response("Player Not Found", 404)
+    if player is None: #error checking
+        return make_response("Player Not Found", 404)
 
-#     request_body = request.get_json()
-#     new_game = Game(game_id=request_body["game_id"],
-#         player_id_fk=player.player_id) #this may raise error
+    request_body = request.get_json()
+    new_game = Game(game_id=request_body["game_id"]) 
 
-#     db.session.add(new_game)
-#     db.session.commit()
+    db.session.add(new_game)
+    db.session.commit()
 
-#     return make_response(f"Game {new_game.game_id} successfully created", 201)
+    return make_response(f"Game {new_game.game_id} successfully created", 201)
 
 #DELETE /games/<game_id> -----WORKS!
 # Can I change it so the route includes the player id? Maybe it won't work like the GET for games

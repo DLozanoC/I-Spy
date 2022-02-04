@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify, make_response
 from app import db
-from app.models.game import Game
-from app.models.player import Player
+from app.models.models import Game
+from app.models.models import Player
 
 # example_bp = Blueprint('example_bp', __name__)
 
@@ -63,7 +63,7 @@ def delete_a_player(player_id):
 #     return jsonify(games_response, 200)
 
 # POST /players/<player_id>/games - Create game from players id ------WORKS!
-@players_bp.route("/<player_id>/games", methods=["POST"])
+@players_bp.route("/game", methods=["POST"])
 def post_game_to_player(player_id):
     player = Player.query.get(player_id) 
 
@@ -71,7 +71,9 @@ def post_game_to_player(player_id):
         return make_response("Player Not Found", 404)
 
     request_body = request.get_json()
-    new_game = Game(game_id=request_body["game_id"]) 
+    new_game = Game(game_id=request_body["game_id"]) # double check this line. pass both players ids instead
+    # might be better not to add the player id in the route? 
+    # I could call the player by name instead of id
 
     db.session.add(new_game)
     db.session.commit()

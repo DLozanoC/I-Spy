@@ -1,7 +1,7 @@
 import pytest
 from app import create_app
 from app import db
-from app.models.player import Player
+from app.models.models import Player
 
 #When adding this decorator to a function we are  registering this function as being part of pytest
 #When we have a test we can pass a function to a test. the function will act as a variable that 

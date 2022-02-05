@@ -64,15 +64,20 @@ def delete_a_player(player_id):
 
 # POST /players/<player_id>/games - Create game from players id ------WORKS!
 @players_bp.route("/game", methods=["POST"])
-def post_game_to_player(player_id):
-    player = Player.query.get(player_id) 
+def post_game_to_player():
+    # player = Player.query.get(player_id) 
+    challenger_id = request.get_json()['challenger_id']
+    responder_id = request.get_json()['responder_id']
+    challenger = Game.query.get(challenger_id) 
+    responder = Game.query.get(responder_id)
 
-    if player is None: #error checking
+    if challenger is None:
+        return make_response("Player not found", 404)
+    elif responder is None:
         return make_response("Player Not Found", 404)
 
     request_body = request.get_json()
-    new_game = Game(game_id=request_body["game_id"]) # double check this line. pass both players ids instead
-    # might be better not to add the player id in the route? 
+    new_game = Game(challenger_id=challenger_id, responder_id=responder_id) 
     # I could call the player by name instead of id
 
     db.session.add(new_game)

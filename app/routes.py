@@ -68,8 +68,8 @@ def post_game_to_player():
     # player = Player.query.get(player_id) 
     challenger_id = request.get_json()['challenger_id']
     responder_id = request.get_json()['responder_id']
-    challenger = Game.query.get(challenger_id) 
-    responder = Game.query.get(responder_id)
+    challenger = Player.query.get(player_id=challenger_id) 
+    responder = Player.query.get(player_id=responder_id)
 
     if challenger is None:
         return make_response("Player not found", 404)

@@ -9,8 +9,8 @@ class Game(db.Model):
     __tablename__= 'game'
     game_id = db.Column(db.Integer, primary_key=True)
     rating_count = db.Column(db.Integer)
-    challenger_id = db.Column(db.Integer, db.ForeignKey('player.player_id'), primary_key=True)
-    responder_id = db.Column(db.Integer, db.ForeignKey('player.player_id'), primary_key=True)
+    challenger_id = db.Column(db.Integer, db.ForeignKey('player.player_id'))
+    responder_id = db.Column(db.Integer, db.ForeignKey('player.player_id'))
 
     def to_dict(self):
         return {"game_id": self.game_id,

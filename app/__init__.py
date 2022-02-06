@@ -28,8 +28,8 @@ def create_app(test_config = None):
 
     # Import models here for Alembic setup
     # from app.models.ExampleModel import ExampleModel
-    from app.models.game import Game
-    from app.models.player import Player
+    # from app.models.game import Game
+    from app.models.models import Player
 
     db.init_app(app)
     migrate.init_app(app, db)

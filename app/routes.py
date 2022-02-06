@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify, make_response
 from app import db
-from app.models.game import Game
-from app.models.player import Player
+from app.models.models import Game
+from app.models.models import Player
 
 # example_bp = Blueprint('example_bp', __name__)
 
@@ -32,52 +32,60 @@ def create_player():
 
     return jsonify(new_player.to_dict())
 
-#DELETE PLAYER - NOT WORKING ON POSTMAN
-# @players_bp.route("/<player_id>", methods=["DELETE"])
-# def delete_a_player(player_id):
-#     player = Player.query.get(player_id)
-#     if player is None:
-#         return make_response(f"Player {player_id} not found", 404)
+#DELETE PLAYER 
+@players_bp.route("/<player_id>", methods=["DELETE"])
+def delete_a_player(player_id):
+    player = Player.query.get(player_id)
+    if player is None:
+        return make_response(f"Player {player_id} not found", 404)
     
-#     db.session.delete(player)
-#     db.session.commit()
-#     return make_response(f'Game {player.player_id} successfully deleted', 200)
+    db.session.delete(player)
+    db.session.commit()
+    return make_response(f'Player {player.player_id} successfully deleted', 200)
 
 #<--------------- #GET POST & DELETE GAMES --------------->
 # GET /games - Read game
 # 405 Method Not Allowed - When I changed the route to check the games of a certain player
 # it worked when the route was just /games but I need it to be specific
-# @games_bp.route("players/<player_id>/games", methods=["GET"])
-# def read_game(player_id):
-#     #games = Game.query.all()
-#     player = Player.query.get(player_id)
+@games_bp.route("/<player_id>/games", methods=["GET"])
+def read_game(player_id):
+    #games = Game.query.all()
+    player = Player.query.get(player_id)
 
-#     if player is None:
-#         return make_response("Game not found", 404)
+    if player is None:
+        return make_response("Game not found", 404)
 
-#     games = Game.query.filter(Game.player_id_fk==player_id).all()
-#     games_response = []
-#     for game in games:
-#         games_response.append(game.to_dict())
+    games = Game.query.filter(Game.player_id_fk==player_id).all()
+    games_response = []
+    for game in games:
+        games_response.append(game.to_dict())
             
-#     return jsonify(games_response, 200)
+    return jsonify(games_response, 200)
 
-# POST /players/<player_id>/games - Create game from players id ------WORKS!
-# @players_bp.route("/<player_id>/games", methods=["POST"])
-# def post_game_to_player(player_id):
-#     player = Player.query.get(player_id) 
+# POST /players/games - Create game ------WORKS!
+@players_bp.route("/game", methods=["POST"])
+def post_game_to_player():
+    # player = Player.query.get(player_id) 
+    challenger_id = request.get_json()['challenger_id']
+    responder_id = request.get_json()['responder_id']
+    challenger = Player.query.get(challenger_id) 
+    responder = Player.query.get(responder_id)
 
-#     if player is None: #error checking
-#         return make_response("Player Not Found", 404)
+# HOW TO ADD THE NAME OF THE PLAYER INSTEAD OF JUST PRINTING "PLAYER NOT FOUND"
+# MCOME UP WITH A BETTER RESPONSE
+    if challenger is None:
+        return make_response("Player not found", 404)
+    elif responder is None:
+        return make_response("Player Not Found", 404)
 
-#     request_body = request.get_json()
-#     new_game = Game(game_id=request_body["game_id"],
-#         player_id_fk=player.player_id) #this may raise error
+    request_body = request.get_json()
+    new_game = Game(challenger_id=challenger_id, responder_id=responder_id) 
+    # I could call the player by name instead of id
 
-#     db.session.add(new_game)
-#     db.session.commit()
+    db.session.add(new_game)
+    db.session.commit()
 
-#     return make_response(f"Game {new_game.game_id} successfully created", 201)
+    return make_response(f"Game {new_game.game_id} successfully created", 201)
 
 #DELETE /games/<game_id> -----WORKS!
 # Can I change it so the route includes the player id? Maybe it won't work like the GET for games

@@ -47,22 +47,22 @@ def delete_a_player(player_id):
 # GET /games - Read game
 # 405 Method Not Allowed - When I changed the route to check the games of a certain player
 # it worked when the route was just /games but I need it to be specific
-# @games_bp.route("/<player_id>/games", methods=["GET"])
-# def read_game(player_id):
-#     #games = Game.query.all()
-#     player = Player.query.get(player_id)
+@games_bp.route("/<player_id>/games", methods=["GET"])
+def read_game(player_id):
+    #games = Game.query.all()
+    player = Player.query.get(player_id)
 
-#     if player is None:
-#         return make_response("Game not found", 404)
+    if player is None:
+        return make_response("Game not found", 404)
 
-#     games = Game.query.filter(Game.player_id_fk==player_id).all()
-#     games_response = []
-#     for game in games:
-#         games_response.append(game.to_dict())
+    games = Game.query.filter(Game.player_id_fk==player_id).all()
+    games_response = []
+    for game in games:
+        games_response.append(game.to_dict())
             
-#     return jsonify(games_response, 200)
+    return jsonify(games_response, 200)
 
-# POST /players/<player_id>/games - Create game from players id ------WORKS!
+# POST /players/games - Create game ------WORKS!
 @players_bp.route("/game", methods=["POST"])
 def post_game_to_player():
     # player = Player.query.get(player_id) 
@@ -71,6 +71,8 @@ def post_game_to_player():
     challenger = Player.query.get(challenger_id) 
     responder = Player.query.get(responder_id)
 
+# HOW TO ADD THE NAME OF THE PLAYER INSTEAD OF JUST PRINTING "PLAYER NOT FOUND"
+# MCOME UP WITH A BETTER RESPONSE
     if challenger is None:
         return make_response("Player not found", 404)
     elif responder is None:

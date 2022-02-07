@@ -88,11 +88,13 @@ def read_game(player_id):
 def get_specific_game(game_id):
 
     game = Game.query.get(game_id)
+    one_game = Game.query.filter_by(game_id = game)
+    # game_response = []
 
     if game is None:
         return make_response("Game not found", 404)
     
-    return game.to_dict(), 200
+    return one_game.to_dict(), 200
 
 
 # POST /players/game - Create game ------WORKS!
@@ -111,7 +113,7 @@ def post_game_to_player():
     elif responder is None:
         return make_response("Player Not Found", 404)
     elif challenger == responder:
-        return make_response("You can't play a game with yourself", 404)
+        return make_response("You can't play a game with yourself", 405)
 #In the body I need the challenge (needs to be saved with the game entity)
     request_body = request.get_json()
     new_game = Game(challenger_id=challenger_id, responder_id=responder_id) 

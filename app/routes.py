@@ -93,7 +93,7 @@ def get_specific_game(game_id):
         return make_response("Game not found", 404)
     
     
-    # return jsonify(game.to_dict(), 200)
+    return jsonify(game.to_dict(), 200)
 
     
 

@@ -92,7 +92,7 @@ def read_game(game_id):
     if game is None:
         return make_response("Game not found", 404)
     else:
-        return jsonify(Game.to_dict(), 200)
+        return jsonify(game.to_dict(), 200)
 
     
 

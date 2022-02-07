@@ -65,7 +65,7 @@ def read_game(player_id):
         game_names = game.to_dict()
         game_names["challenger_name"] = player_name
         responder = Player.query.get(game.responder_id)
-        game_names["responder_id"] = responder.name
+        game_names["responder_name"] = responder.name
         games_challenger_response.append(game_names)
     dict_responses["challenger"] = games_challenger_response
 

@@ -98,7 +98,7 @@ def get_specific_game(game_id):
     
 
 
-# POST /players/games - Create game ------WORKS!
+# POST /players/game - Create game ------WORKS!
 @players_bp.route("/game", methods=["POST"])
 def post_game_to_player():
     # player = Player.query.get(player_id) 
@@ -113,6 +113,8 @@ def post_game_to_player():
         return make_response("Player not found", 404)
     elif responder is None:
         return make_response("Player Not Found", 404)
+    elif challenger == responder:
+        return make_response("You can't play a game with yourself", 404)
 #In the body I need the challenge (needs to be saved with the game entity)
     request_body = request.get_json()
     new_game = Game(challenger_id=challenger_id, responder_id=responder_id) 

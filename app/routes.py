@@ -50,6 +50,7 @@ def delete_a_player(player_id):
 def read_game(player_id):
 
     player = Player.query.get(player_id)
+    player_name = player.name
 
     if player is None:
         return make_response("Game not found", 404)
@@ -61,7 +62,11 @@ def read_game(player_id):
     games_challenger = Game.query.filter(Game.challenger_id==player_id).all()
     games_challenger_response = []
     for game in games_challenger:
-        games_challenger_response.append(game.to_dict())
+        game_names = game.to_dict()
+        game_names["challenger_name"] = player_name
+        responder = Player.query.get(game.responder_id)
+        game_names["responder_id"] = responder.name
+        games_challenger_response.append(game_names)
     dict_responses["challenger"] = games_challenger_response
 
 # Responder

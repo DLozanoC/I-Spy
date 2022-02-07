@@ -88,13 +88,13 @@ def read_game(player_id):
 def get_specific_game(game_id):
 
     game = Game.query.get(game_id)
-    one_game = Game.query.filter_by(game_id = game)
+    # one_game = Game.query.filter_by(game_id = game)
     # game_response = []
 
     if game is None:
         return make_response("Game not found", 404)
     
-    return one_game.to_dict(), 200
+    return game.to_dict(), 200
 
 
 # POST /players/game - Create game ------WORKS!

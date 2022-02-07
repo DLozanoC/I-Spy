@@ -48,24 +48,31 @@ def delete_a_player(player_id):
 # GET /games - Read games from one specific player
 @games_bp.route("/<player_id>", methods=["GET"])
 def read_game(player_id):
+
     player = Player.query.get(player_id)
 
     if player is None:
         return make_response("Game not found", 404)
+
+# Empty dict that will be populated with challenger and responder as keys and their games list as values
+    dict_responses = {}
 
 # Challenger
     games_challenger = Game.query.filter(Game.challenger_id==player_id).all()
     games_challenger_response = []
     for game in games_challenger:
         games_challenger_response.append(game.to_dict())
+    dict_responses["challenger"] = games_challenger_response
 
 # Responder
     games_responder = Game.query.filter(Game.responder_id==player_id).all()
     games_responder_response = []
     for game in games_responder:
         games_responder_response.append(game.to_dict())
-            
-    return jsonify(games_challenger_response, 200)
+    dict_responses["responder"] = games_responder_response
+
+    
+    return jsonify(dict_responses, 200)
 
 # GET /game - Read one specific game
 

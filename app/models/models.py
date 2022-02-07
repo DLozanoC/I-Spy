@@ -15,6 +15,8 @@ class Game(db.Model):
 
     def to_dict(self):
         return {"game_id": self.game_id,
+        "challenger_id": self.challenger_id,
+        "responder_id": self.responder_id
             #"player": self.player_id_fk,
             }
     

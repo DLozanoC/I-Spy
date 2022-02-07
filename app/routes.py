@@ -92,10 +92,7 @@ def get_specific_game(game_id):
     if game is None:
         return make_response("Game not found", 404)
     
-    
-    return jsonify(game.to_dict(), 200)
-
-    
+    return game.to_dict(), 200
 
 
 # POST /players/game - Create game ------WORKS!

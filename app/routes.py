@@ -84,15 +84,16 @@ def read_game(player_id):
     return jsonify(dict_responses, 200)
 
 # GET /game - Read one specific game
-# @games_bp.route("/<player_id>/<game_id>", methods=["GET"])
-# def read_game(game_id):
+@games_bp.route("/<player_id>/<game_id>", methods=["GET"])
+def read_game(game_id):
 
-#     game = Game.query.get(game_id)
+    game = Game.query.get(game_id)
 
-#     if game is None:
-#         return make_response("Game not found", 404)
-#     else:
-#         return jsonify(game.to_dict(), 200)
+    if game is None:
+        return make_response("Game not found", 404)
+    
+    
+    return jsonify(game.to_dict(), 200)
 
     
 

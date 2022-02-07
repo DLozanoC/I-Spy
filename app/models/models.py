@@ -8,7 +8,8 @@ from app import db
 class Game(db.Model):
     __tablename__= 'game'
     game_id = db.Column(db.Integer, primary_key=True)
-    rating_count = db.Column(db.Integer)
+    # rating_count = db.Column(db.Integer)#Change to string 
+    #add challenger text and responder text
     challenger_id = db.Column(db.Integer, db.ForeignKey('player.player_id'))
     responder_id = db.Column(db.Integer, db.ForeignKey('player.player_id'))
 

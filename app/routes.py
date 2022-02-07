@@ -21,6 +21,7 @@ def read_player():
 
     return jsonify(players_response)
 
+# Might not be neccessary since google sign in takes care of this for us. DOUBLE CHECK
 # POST /players (create player)
 @players_bp.route("", methods=["POST"])
 def create_player():
@@ -32,7 +33,7 @@ def create_player():
 
     return jsonify(new_player.to_dict())
 
-#DELETE PLAYER 
+#DELETE PLAYER - Might not be neccessary <- DOUBLE CHECK
 @players_bp.route("/<player_id>", methods=["DELETE"])
 def delete_a_player(player_id):
     player = Player.query.get(player_id)
@@ -43,24 +44,30 @@ def delete_a_player(player_id):
     db.session.commit()
     return make_response(f'Player {player.player_id} successfully deleted', 200)
 
-#<--------------- #GET POST & DELETE GAMES --------------->
-# GET /games - Read game
-# 405 Method Not Allowed - When I changed the route to check the games of a certain player
-# it worked when the route was just /games but I need it to be specific
-@games_bp.route("/<player_id>/games", methods=["GET"])
+#<--------------- #GET POST PUT & DELETE GAMES --------------->
+# GET /games - Read games from one specific player
+@games_bp.route("/<player_id>", methods=["GET"])
 def read_game(player_id):
-    #games = Game.query.all()
     player = Player.query.get(player_id)
 
     if player is None:
         return make_response("Game not found", 404)
 
-    games = Game.query.filter(Game.player_id_fk==player_id).all()
-    games_response = []
-    for game in games:
-        games_response.append(game.to_dict())
+# Challenger
+    games_challenger = Game.query.filter(Game.challenger_id==player_id).all()
+    games_challenger_response = []
+    for game in games_challenger:
+        games_challenger_response.append(game.to_dict())
+
+# Responder
+    games_responder = Game.query.filter(Game.responder_id==player_id).all()
+    games_responder_response = []
+    for game in games_responder:
+        games_responder_response.append(game.to_dict())
             
-    return jsonify(games_response, 200)
+    return jsonify(games_challenger_response, 200)
+
+# GET /game - Read one specific game
 
 # POST /players/games - Create game ------WORKS!
 @players_bp.route("/game", methods=["POST"])
@@ -77,7 +84,7 @@ def post_game_to_player():
         return make_response("Player not found", 404)
     elif responder is None:
         return make_response("Player Not Found", 404)
-
+#In the body I need the challenge (needs to be saved with the game entity)
     request_body = request.get_json()
     new_game = Game(challenger_id=challenger_id, responder_id=responder_id) 
     # I could call the player by name instead of id

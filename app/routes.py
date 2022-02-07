@@ -73,7 +73,11 @@ def read_game(player_id):
     games_responder = Game.query.filter(Game.responder_id==player_id).all()
     games_responder_response = []
     for game in games_responder:
-        games_responder_response.append(game.to_dict())
+        game_names = game.to_dict()
+        game_names["responder_name"] = player_name
+        challenger = Player.query.get(game.challenger_id)
+        game_names["challenger_name"] = challenger.name
+        games_responder_response.append(game_names)
     dict_responses["responder"] = games_responder_response
 
     

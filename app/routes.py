@@ -85,7 +85,7 @@ def read_game(player_id):
 
 # GET /game - Read one specific game
 @games_bp.route("/<player_id>/<game_id>", methods=["GET"])
-def read_game(game_id):
+def get_specific_game(game_id):
 
     game = Game.query.get(game_id)
 

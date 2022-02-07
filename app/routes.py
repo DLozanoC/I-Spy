@@ -13,7 +13,7 @@ players_bp = Blueprint('players_bp', __name__, url_prefix="/players")
 
 # GET /players - Read player info
 @players_bp.route("", methods=["GET"])
-def read_player():
+def read_players():
     players = Player.query.all()
     players_response = []
     for player in players:
@@ -45,7 +45,7 @@ def delete_a_player(player_id):
     return make_response(f'Player {player.player_id} successfully deleted', 200)
 
 #<--------------- #GET POST PUT & DELETE GAMES --------------->
-# GET /games - Read games from one specific player
+# GET /games - Read games from one specific player ----FINISHED!
 @games_bp.route("/<player_id>", methods=["GET"])
 def read_game(player_id):
 
@@ -63,9 +63,9 @@ def read_game(player_id):
     games_challenger_response = []
     for game in games_challenger:
         game_names = game.to_dict()
-        game_names["challenger_name"] = player_name
-        responder = Player.query.get(game.responder_id)
-        game_names["responder_name"] = responder.name
+        game_names["challenger_name"] = player_name #Adding challenger's name to my games dict
+        responder = Player.query.get(game.responder_id) #Calling the responders name from the id 
+        game_names["responder_name"] = responder.name #Adding responder's name to my games dict
         games_challenger_response.append(game_names)
     dict_responses["challenger"] = games_challenger_response
 
@@ -84,6 +84,18 @@ def read_game(player_id):
     return jsonify(dict_responses, 200)
 
 # GET /game - Read one specific game
+@games_bp.route("/<player_id>/<game_id>", methods=["GET"])
+def read_game(game_id):
+
+    game = Game.query.get(game_id)
+
+    if game is None:
+        return make_response("Game not found", 404)
+    else:
+        return jsonify(Game.to_dict(), 200)
+
+    
+
 
 # POST /players/games - Create game ------WORKS!
 @players_bp.route("/game", methods=["POST"])

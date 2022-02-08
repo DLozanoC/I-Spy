@@ -136,10 +136,10 @@ def post_game_to_player():
 
 #PUT GAME rating --- Working on this
 @games_bp.route("/<player_id>/<game_id>/text", methods=["PATCH"])
-def rate_friend(game_id, player_id):
+def rate_friend(player_id, game_id):
     game = Game.query.get(game_id)
     # player = Player.query.get(player_id)
-    # challenger = Game.query.filter(Game.challenger_id==player_id).all()
+    # challenger = Game.query.filter(Game.challenger_id==player_id)
     request_body = request.get_json()
 
     if game is None:
@@ -154,4 +154,4 @@ def rate_friend(game_id, player_id):
 
     db.session.commit()
 
-    # return make_response(response, 200)
+    return make_response(response, 200)

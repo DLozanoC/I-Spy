@@ -83,12 +83,11 @@ def read_game(player_id):
     
     return jsonify(dict_responses, 200)
 
-# GET /game - Read one specific game
+# GET /game - Read one specific game ---WORKS!
 @games_bp.route("/<player_id>/<game_id>", methods=["GET"])
 def get_specific_game(player_id, game_id):
 
     game = Game.query.get(game_id)
-    # one_game = Game.query.filter_by(game_id = game)
 
     if game is None:
         return make_response("Game not found", 404)
@@ -135,20 +134,32 @@ def post_game_to_player():
 #     db.session.commit()
 #     return make_response(f'Game {game.game_id} successfully deleted', 200)
 
-#PUT GAME rating
-# @games_bp.route("/<player_id>/<game_id>", methods=["PUT"])
-# def update_a_game(game_id):
-#     game = Game.query.get(game_id)
+#PUT GAME rating --- Working on this
+@games_bp.route("/<player_id>/<game_id>/text", methods=["PUT"])
+def rate_friend(game_id, player_id):
+    game = Game.query.get(game_id)
+    # player = Player.query.get(player_id)
+    responder = Game.query.filter(Game.challenger_id==player_id).all()
+    request_body = request.get_json()
     
-#     if game is None:
-#         return make_response(f"Game {game_id} not found", 404)
+    if game is None:
+        return make_response(f"Game {game_id} not found", 404)
+# Finish Put method for message
+#get the game_id and the player_id and add the {text_responder = game.text_responder}
+#Game id and player id go somewhere else. Change player_id for challenger_id and responder_id
+#Maybe just the challenger_id because it is the only one who can send this text
+#the responder_id will be used with the PUT for the image
+    
+    response = {
+        "game_id": game.game_id,
+        "responder_id": game.responder_id,
+        "text_responder": game.text_responder
+    }
+    
+    request_body = request.get_json()
 
-#     game.rating_count+=1
-#     db.session.commit()
-    
-#     response = {
-#         "game_id": game.game_id,
-#         # "rating_count": game.rating_count,
-#         "player_id": game.player_id_fk
-#     }
-#     return make_response(response, 200)
+    game.text_responder = request_body["text_responder"]
+
+    db.session.commit()
+
+    return make_response(response, 200)

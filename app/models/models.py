@@ -3,7 +3,7 @@ from app import db
 class Game(db.Model):
     __tablename__= 'game'
     game_id = db.Column(db.Integer, primary_key=True)
-    # rating_count = db.Column(db.Integer)#Change to string 
+    text_responder = db.Column(db.String (100))
     #add challenger text and responder text
     challenger_id = db.Column(db.Integer, db.ForeignKey('player.player_id'))
     responder_id = db.Column(db.Integer, db.ForeignKey('player.player_id'))

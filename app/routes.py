@@ -154,4 +154,4 @@ def rate_friend(game_id, player_id):
 
     db.session.commit()
 
-    return make_response(response, 200)
+    # return make_response(response, 200)

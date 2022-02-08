@@ -85,11 +85,10 @@ def read_game(player_id):
 
 # GET /game - Read one specific game
 @games_bp.route("/<player_id>/<game_id>", methods=["GET"])
-def get_specific_game(game_id):
+def get_specific_game(player_id, game_id):
 
     game = Game.query.get(game_id)
     # one_game = Game.query.filter_by(game_id = game)
-    # game_response = []
 
     if game is None:
         return make_response("Game not found", 404)

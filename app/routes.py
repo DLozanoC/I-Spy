@@ -135,7 +135,7 @@ def post_game_to_player():
 #     return make_response(f'Game {game.game_id} successfully deleted', 200)
 
 #PUT GAME rating --- Working on this
-@games_bp.route("/<player_id>/<game_id>/text", methods=["PUT"])
+@games_bp.route("/<player_id>/<game_id>/text", methods=["PATCH"])
 def rate_friend(game_id, player_id):
     game = Game.query.get(game_id)
     # player = Player.query.get(player_id)

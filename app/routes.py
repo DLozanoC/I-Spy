@@ -139,7 +139,7 @@ def post_game_to_player():
 def rate_friend(game_id, player_id):
     game = Game.query.get(game_id)
     # player = Player.query.get(player_id)
-    challenger = Game.query.filter(Game.challenger_id==player_id).all()
+    # challenger = Game.query.filter(Game.challenger_id==player_id).all()
     request_body = request.get_json()
 
     if game is None:

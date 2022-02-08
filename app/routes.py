@@ -135,23 +135,23 @@ def post_game_to_player():
 #     return make_response(f'Game {game.game_id} successfully deleted', 200)
 
 #PUT GAME rating --- Working on this
-# @games_bp.route("/<player_id>/<game_id>/text", methods=["PUT"])
-# def rate_friend(player_id, game_id):
-#     game = Game.query.get(game_id)
-#     # player = Player.query.get(player_id)
-#     # challenger = Game.query.filter(Game.challenger_id==player_id)
-#     request_body = request.get_json()
+@games_bp.route("/<player_id>/<game_id>/text", methods=["PUT"])
+def rate_friend(player_id, game_id):
+    game = Game.query.get(game_id)
+    # player = Player.query.get(player_id)
+    # challenger = Game.query.filter(Game.challenger_id==player_id)
+    request_body = request.get_json()
 
-#     if game is None:
-#         return make_response(f"Game {game_id} not found, can't send your message", 404)
-#     #Do I need to add if challenger is None?
+    if game is None:
+        return make_response(f"Game {game_id} not found, can't send your message", 404)
+    #Do I need to add if challenger is None?
     
-#     response = {
-#         "text_challenger": game.text_challenger,
-#     }
+    response = {
+        "text_challenger": game.text_challenger,
+    }
 
-#     game.text_challenger = request_body["text_challenger"]
+    game.text_challenger = request_body["text_challenger"]
 
-#     db.session.commit()
+    db.session.commit()
 
-#     return make_response(response, 200)
+    return make_response(response, 200)

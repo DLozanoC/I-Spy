@@ -139,26 +139,18 @@ def post_game_to_player():
 def rate_friend(game_id, player_id):
     game = Game.query.get(game_id)
     # player = Player.query.get(player_id)
-    responder = Game.query.filter(Game.challenger_id==player_id).all()
-    request_body = request.get_json()
-    
-    if game is None:
-        return make_response(f"Game {game_id} not found", 404)
-# Finish Put method for message
-#get the game_id and the player_id and add the {text_responder = game.text_responder}
-#Game id and player id go somewhere else. Change player_id for challenger_id and responder_id
-#Maybe just the challenger_id because it is the only one who can send this text
-#the responder_id will be used with the PUT for the image
-    
-    response = {
-        "game_id": game.game_id,
-        "responder_id": game.responder_id,
-        "text_responder": game.text_responder
-    }
-    
+    challenger = Game.query.filter(Game.challenger_id==player_id).all()
     request_body = request.get_json()
 
-    game.text_responder = request_body["text_responder"]
+    if game is None:
+        return make_response(f"Game {game_id} not found, can't send your message", 404)
+    #Do I need to add if challenger is None?
+    
+    response = {
+        "text_challenger": game.text_challenger,
+    }
+
+    game.text_challenger = request_body["text_challenger"]
 
     db.session.commit()
 

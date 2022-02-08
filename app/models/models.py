@@ -3,8 +3,8 @@ from app import db
 class Game(db.Model):
     __tablename__= 'game'
     game_id = db.Column(db.Integer, primary_key=True)
-    text_responder = db.Column(db.String (100))
-    #add challenger text and responder text
+    text_challenger = db.Column(db.String (100))
+    #add responder image like challenger has text
     challenger_id = db.Column(db.Integer, db.ForeignKey('player.player_id'))
     responder_id = db.Column(db.Integer, db.ForeignKey('player.player_id'))
 

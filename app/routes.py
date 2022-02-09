@@ -98,13 +98,14 @@ def get_specific_game(player_id, game_id):
 # POST /players/game - Create game ------WORKS!
 @players_bp.route("/game", methods=["POST"])
 def post_game_to_player():
+    print(request.get_json())
     # player = Player.query.get(player_id) 
     challenger_id = request.get_json()['challenger_id']
     responder_id = request.get_json()['responder_id']
-    game = request.get_json()['game_id']
+    request_body = request.get_json()
 
-    if 'characteristic' in game:
-        characteristic = game['characteristic']
+    if 'characteristic' in request_body:
+        characteristic = request_body['characteristic']
     else:
         return make_response("What should your friend look for?", 405)
 

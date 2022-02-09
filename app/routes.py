@@ -101,20 +101,25 @@ def post_game_to_player():
     # player = Player.query.get(player_id) 
     challenger_id = request.get_json()['challenger_id']
     responder_id = request.get_json()['responder_id']
+    game = request.get_json()['game_id']
+
+    if 'characteristic' in game:
+        characteristic = game['characteristic']
+    else:
+        return make_response("What should your friend look for?", 405)
+
     characteristic = request.get_json()['characteristic']
     challenger = Player.query.get(challenger_id) 
     responder = Player.query.get(responder_id)
     # characteristic = Game.query.get(characteristic)
-    
-# HOW TO ADD THE NAME OF THE PLAYER INSTEAD OF JUST PRINTING "PLAYER NOT FOUND"
+
     if challenger is None:
         return make_response("Player not found", 404)
     elif responder is None:
-        return make_response("Player Not Found", 404)
+        return make_response("Couldn't find this friend", 404)
     elif challenger == responder:
         return make_response("Ok Billy Idol, you can dance with youself but you can't play this game with yourself", 405)
-    # elif characteristic is None:
-    #     return make_response("What should your friend look for?", 405)
+    
 
     new_game = Game(challenger_id=challenger_id, responder_id=responder_id, characteristic =characteristic)
     request_body = request.get_json()
@@ -141,12 +146,14 @@ def post_game_to_player():
 def rate_friend(player_id, game_id):
     game = Game.query.get(game_id)
     # player = Player.query.get(player_id)
-    challenger = Game.query.filter(Game.challenger_id==player_id)
+    
+    #check if player_id matches challenger_id
+    responder = Player.query.get(responder_id)
     request_body = request.get_json()
 
     if game is None:
         return make_response(f"Game {game_id} not found, can't send your message", 404)
-    #Do I need to add if challenger is None?
+    
     
     response = {
         "text_challenger": game.text_challenger,

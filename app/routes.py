@@ -2,6 +2,7 @@ from flask import Blueprint, request, jsonify, make_response
 from app import db
 from app.models.models import Game
 from app.models.models import Player
+from flask_cors import cross_origin
 
 # example_bp = Blueprint('example_bp', __name__)
 
@@ -13,6 +14,7 @@ players_bp = Blueprint('players_bp', __name__, url_prefix="/players")
 
 # GET /players - Read player info
 @players_bp.route("", methods=["GET"])
+@cross_origin()
 def read_players():
     players = Player.query.all()
     players_response = []
@@ -24,6 +26,7 @@ def read_players():
 # Might not be neccessary since google sign in takes care of this for us. DOUBLE CHECK
 # POST /players (create player)
 @players_bp.route("", methods=["POST"])
+@cross_origin()
 def create_player():
     request_body = request.get_json()
     new_player = Player(name=request_body["name"])
@@ -35,6 +38,7 @@ def create_player():
 
 #DELETE PLAYER - Might not be neccessary <- DOUBLE CHECK
 @players_bp.route("/<player_id>", methods=["DELETE"])
+@cross_origin()
 def delete_a_player(player_id):
     player = Player.query.get(player_id)
     if player is None:
@@ -47,6 +51,7 @@ def delete_a_player(player_id):
 #<--------------- #GET POST PUT & DELETE GAMES --------------->
 # GET /games - Read games from one specific player ----FINISHED!
 @games_bp.route("/<player_id>", methods=["GET"])
+@cross_origin()
 def read_game(player_id):
 
     player = Player.query.get(player_id)
@@ -97,12 +102,12 @@ def get_specific_game(player_id, game_id):
 
 # POST /players/game - Create game ------WORKS!
 @players_bp.route("/game", methods=["POST"])
+@cross_origin()
 def post_game_to_player():
     print(request.get_json())
-    # player = Player.query.get(player_id) 
     challenger_id = request.get_json()['challenger_id']
     responder_id = request.get_json()['responder_id']
-    request_body = request.get_json()
+    request_body = request.get_json() #What the player needs to submit
 
     if 'characteristic' in request_body:
         characteristic = request_body['characteristic']
@@ -112,7 +117,6 @@ def post_game_to_player():
     characteristic = request.get_json()['characteristic']
     challenger = Player.query.get(challenger_id) 
     responder = Player.query.get(responder_id)
-    # characteristic = Game.query.get(characteristic)
 
     if challenger is None:
         return make_response("Player not found", 404)
@@ -121,13 +125,11 @@ def post_game_to_player():
     elif challenger == responder:
         return make_response("Ok Billy Idol, you can dance with youself but you can't play this game with yourself", 405)
     
-
     new_game = Game(challenger_id=challenger_id, responder_id=responder_id, characteristic =characteristic)
     request_body = request.get_json()
 
     db.session.add(new_game)
     db.session.commit()
-
     return make_response(f"Game {new_game.game_id} successfully created", 201)
 
 #DELETE /games/<game_id> -----WORKS!
@@ -144,23 +146,32 @@ def post_game_to_player():
 
 #PUT GAME rating --- Working on this
 @games_bp.route("/<player_id>/<game_id>/text", methods=["PUT"])
+@cross_origin()
 def rate_friend(player_id, game_id):
     game = Game.query.get(game_id)
     # player = Player.query.get(player_id)
     
     #check if player_id matches challenger_id
-    responder = Player.query.get(responder_id)
+    # responder = Player.query.get(responder_id)
     request_body = request.get_json()
+
+    if 'text_challenger' in request_body:
+        text_challenger = request_body['text_challenger']
+    else:
+        return make_response("What did you think of your friend's picture?", 405)
+
+    text_challenger = request.get_json()['text_challenger']
+    challenger = Player.query.get(challenger_id) 
 
     if game is None:
         return make_response(f"Game {game_id} not found, can't send your message", 404)
-    
     
     response = {
         "text_challenger": game.text_challenger,
     }
 
     game.text_challenger = request_body["text_challenger"]
+    rating = Game(challenger_id=challenger_id, responder_id=responder_id, characteristic =characteristic)
 
     db.session.commit()
 

@@ -4,6 +4,7 @@ class Game(db.Model):
     __tablename__= 'game'
     game_id = db.Column(db.Integer, primary_key=True)
     text_challenger = db.Column(db.String)
+    characteristic = db.Column(db.String)
     #add responder image like challenger has text
     challenger_id = db.Column(db.Integer, db.ForeignKey('player.player_id'))
     responder_id = db.Column(db.Integer, db.ForeignKey('player.player_id'))
@@ -11,6 +12,7 @@ class Game(db.Model):
     def to_dict(self):
         return {"game_id": self.game_id,
         "text_challenger": self.text_challenger,
+        "characteristic": self.characteristic,
         "challenger_id": self.challenger_id,
         # "responder_id": self.responder_id,
         }

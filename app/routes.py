@@ -101,6 +101,7 @@ def post_game_to_player():
     # player = Player.query.get(player_id) 
     challenger_id = request.get_json()['challenger_id']
     responder_id = request.get_json()['responder_id']
+    characteristic = request.get_json()["characteristic"]
     challenger = Player.query.get(challenger_id) 
     responder = Player.query.get(responder_id)
 
@@ -112,10 +113,9 @@ def post_game_to_player():
         return make_response("Player Not Found", 404)
     elif challenger == responder:
         return make_response("You can't play a game with yourself", 405)
-#In the body I need the challenge (needs to be saved with the game entity)
+
     request_body = request.get_json()
-    new_game = Game(challenger_id=challenger_id, responder_id=responder_id) 
-    # I could call the player by name instead of id
+    new_game = Game(challenger_id=challenger_id, responder_id=responder_id, characteristic =characteristic) 
 
     db.session.add(new_game)
     db.session.commit()

@@ -112,7 +112,7 @@ def post_game_to_player():
         return make_response("Player Not Found", 404)
     elif challenger == responder:
         return make_response("You can't play a game with yourself", 405)
-    elif characteristic == None:
+    elif characteristic is None:
         return make_response("What should your friend look for?", 404)
 
     request_body = request.get_json()

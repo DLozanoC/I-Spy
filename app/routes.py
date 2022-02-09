@@ -101,9 +101,10 @@ def post_game_to_player():
     # player = Player.query.get(player_id) 
     challenger_id = request.get_json()['challenger_id']
     responder_id = request.get_json()['responder_id']
-    characteristic = request.get_json()["characteristic"]
+    characteristic = request.get_json()['characteristic']
     challenger = Player.query.get(challenger_id) 
     responder = Player.query.get(responder_id)
+    characteristic = Game.query.get(characteristic)
     
 # HOW TO ADD THE NAME OF THE PLAYER INSTEAD OF JUST PRINTING "PLAYER NOT FOUND"
     if challenger is None:
@@ -111,7 +112,7 @@ def post_game_to_player():
     elif responder is None:
         return make_response("Player Not Found", 404)
     elif challenger == responder:
-        return make_response("You can't play a game with yourself", 405)
+        return make_response("Ok Billy Idol, you can dance with youself but you can't play this game with yourself", 405)
     # elif characteristic is None:
     #     return make_response("What should your friend look for?", 405)
 

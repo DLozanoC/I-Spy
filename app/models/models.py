@@ -12,7 +12,7 @@ class Game(db.Model):
         return {"game_id": self.game_id,
         "text_challenger": self.text_challenger,
         "challenger_id": self.challenger_id,
-        "responder_id": self.responder_id,
+        # "responder_id": self.responder_id,
         }
     
 class Player(db.Model):

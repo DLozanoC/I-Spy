@@ -104,18 +104,18 @@ def post_game_to_player():
     characteristic = request.get_json()["characteristic"]
     challenger = Player.query.get(challenger_id) 
     responder = Player.query.get(responder_id)
-
+    new_game = Game(challenger_id=challenger_id, responder_id=responder_id, characteristic =characteristic)
 # HOW TO ADD THE NAME OF THE PLAYER INSTEAD OF JUST PRINTING "PLAYER NOT FOUND"
-# MCOME UP WITH A BETTER RESPONSE
     if challenger is None:
         return make_response("Player not found", 404)
     elif responder is None:
         return make_response("Player Not Found", 404)
     elif challenger == responder:
         return make_response("You can't play a game with yourself", 405)
+    elif characteristic == None:
+        return make_response("What should your friend look for?", 404)
 
     request_body = request.get_json()
-    new_game = Game(challenger_id=challenger_id, responder_id=responder_id, characteristic =characteristic) 
 
     db.session.add(new_game)
     db.session.commit()
@@ -135,11 +135,11 @@ def post_game_to_player():
 #     return make_response(f'Game {game.game_id} successfully deleted', 200)
 
 #PUT GAME rating --- Working on this
-# @games_bp.route("/<player_id>/<game_id>/text", methods=["PUT"])
+@games_bp.route("/<player_id>/<game_id>/text", methods=["PUT"])
 def rate_friend(player_id, game_id):
     game = Game.query.get(game_id)
     # player = Player.query.get(player_id)
-    # challenger = Game.query.filter(Game.challenger_id==player_id)
+    challenger = Game.query.filter(Game.challenger_id==player_id)
     request_body = request.get_json()
 
     if game is None:

@@ -101,10 +101,10 @@ def post_game_to_player():
     # player = Player.query.get(player_id) 
     challenger_id = request.get_json()['challenger_id']
     responder_id = request.get_json()['responder_id']
-    characteristic = request.get_json()['characteristic']
+    # characteristic = request.get_json()['characteristic']
     challenger = Player.query.get(challenger_id) 
     responder = Player.query.get(responder_id)
-    characteristic = Game.query.get(characteristic)
+    # characteristic = Game.query.get(characteristic)
     
 # HOW TO ADD THE NAME OF THE PLAYER INSTEAD OF JUST PRINTING "PLAYER NOT FOUND"
     if challenger is None:

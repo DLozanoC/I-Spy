@@ -104,7 +104,6 @@ def get_specific_game(player_id, game_id):
 @players_bp.route("/game", methods=["POST"])
 @cross_origin()
 def post_game_to_player():
-    print(request.get_json())
     challenger_id = request.get_json()['challenger_id']
     responder_id = request.get_json()['responder_id']
     request_body = request.get_json() #What the player needs to submit
@@ -123,10 +122,9 @@ def post_game_to_player():
     elif responder is None:
         return make_response("Couldn't find this friend", 404)
     elif challenger == responder:
-        return make_response("Ok Billy Idol, you can dance with youself but you can't play this game with yourself", 405)
+        return make_response("Ok Billy Idol, you can dance with yourself but you can't play this game with yourself", 405)
     
     new_game = Game(challenger_id=challenger_id, responder_id=responder_id, characteristic =characteristic)
-    request_body = request.get_json()
 
     db.session.add(new_game)
     db.session.commit()
@@ -145,34 +143,36 @@ def post_game_to_player():
 #     return make_response(f'Game {game.game_id} successfully deleted', 200)
 
 #PUT GAME rating --- Working on this
-@games_bp.route("/<player_id>/<game_id>/text", methods=["PUT"])
+@games_bp.route("/<challenger_id>/<game_id>/text", methods=["PUT"])
 @cross_origin()
-def rate_friend(player_id, game_id):
+def rate_friend(challenger_id, game_id):
     game = Game.query.get(game_id)
-    # player = Player.query.get(player_id)
-    
-    #check if player_id matches challenger_id
-    # responder = Player.query.get(responder_id)
+
     request_body = request.get_json()
+
+    challenger = Player.query.get(challenger_id) 
 
     if 'text_challenger' in request_body:
         text_challenger = request_body['text_challenger']
     else:
         return make_response("What did you think of your friend's picture?", 405)
 
-    text_challenger = request.get_json()['text_challenger']
-    challenger = Player.query.get(challenger_id) 
-
     if game is None:
         return make_response(f"Game {game_id} not found, can't send your message", 404)
-    
+    if challenger is None:
+        return make_response("Player not found", 404)
+    #add challenger name
     response = {
-        "text_challenger": game.text_challenger,
+        "text_challenger": text_challenger, #if I use game.text_challenger it returns it as None not string
     }
-
-    game.text_challenger = request_body["text_challenger"]
-    rating = Game(challenger_id=challenger_id, responder_id=responder_id, characteristic =characteristic)
-
+    game.text_challenger = text_challenger #This is the line that updates the db. Doesn't go in the response
     db.session.commit()
 
+    # return make_response(f"{text_challenger}", 200)
     return make_response(response, 200)
+
+    #Currently returning this error: [parameters: {'text_challenger': 'lol', 'characteristic': None, 'challenger_id': None, 'responder_id': None}]
+    #I might need to find a way to pull that info into mu put so I don't have to do it manually. 
+    #Although if I have to do it manually, that doesn't mean the players do
+    #Double check this tomorrow and finish watching videos to also learn how to add images through
+    #a bucket in my other put route

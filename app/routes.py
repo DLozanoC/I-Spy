@@ -3,6 +3,9 @@ from app import db
 from app.models.models import Game
 from app.models.models import Player
 from flask_cors import cross_origin
+import boto3
+from config import S3_BUCKET, S3_KEY, S3_SECRET_ACCESS_KEY
+
 
 # example_bp = Blueprint('example_bp', __name__)
 
@@ -29,7 +32,7 @@ def read_players():
 @cross_origin()
 def create_player():
     request_body = request.get_json()
-    new_player = Player(name=request_body["name"])
+    new_player = Player(name=request_body["name"]) #add email
 
     db.session.add(new_player)
     db.session.commit()
@@ -142,14 +145,12 @@ def post_game_to_player():
 #     db.session.commit()
 #     return make_response(f'Game {game.game_id} successfully deleted', 200)
 
-#PUT GAME rating --- Working on this
+#PUT GAME rating --- WORKS! Just need to add the challenger's name to it
 @games_bp.route("/<challenger_id>/<game_id>/text", methods=["PUT"])
 @cross_origin()
 def rate_friend(challenger_id, game_id):
     game = Game.query.get(game_id)
-
     request_body = request.get_json()
-
     challenger = Player.query.get(challenger_id) 
 
     if 'text_challenger' in request_body:
@@ -160,19 +161,44 @@ def rate_friend(challenger_id, game_id):
     if game is None:
         return make_response(f"Game {game_id} not found, can't send your message", 404)
     if challenger is None:
-        return make_response("Player not found", 404)
+        return make_response("Who are you playing with?", 404)
     #add challenger name
     response = {
         "text_challenger": text_challenger, #if I use game.text_challenger it returns it as None not string
+        #Add name of challenger to this route. Have to call the Player model
     }
     game.text_challenger = text_challenger #This is the line that updates the db. Doesn't go in the response
     db.session.commit()
 
-    # return make_response(f"{text_challenger}", 200)
     return make_response(response, 200)
 
-    #Currently returning this error: [parameters: {'text_challenger': 'lol', 'characteristic': None, 'challenger_id': None, 'responder_id': None}]
-    #I might need to find a way to pull that info into mu put so I don't have to do it manually. 
-    #Although if I have to do it manually, that doesn't mean the players do
-    #Double check this tomorrow and finish watching videos to also learn how to add images through
-    #a bucket in my other put route
+# -------------------------------------------------------------------------------
+# PUT game image. Responder's action
+@games_bp.route("/<challenger_id>/<game_id>/image", methods=["PUT"])
+@cross_origin()
+def rate_friend(responder_id, challenger_id, game_id):
+
+    s3_resource=boto3.resource('s3') #Resources represent an object-oriented interface to Amazon Web Services
+    my_bucket = s3_resource.Bucket(S3_BUCKET)  
+    summaries =  my_bucket.query.all() #used to say my_bucket.object.all()
+    game = Game.query.get(game_id)
+    request_body = request.get_json()
+    responder = Player.query.get(responder_id) 
+
+    if 'image' in request_body:
+        image = request_body['image']
+    else:
+        return make_response("Make sure you upload your picture", 405)
+
+    if game is None:
+        return make_response(f"Game {game_id} not found, can't send your message", 404)
+    if responder is None:
+        return make_response("Player not found", 404)
+    #add challenger name
+    response = {
+        "image": image, #if I use game.text_challenger it returns it as None not string
+    }
+    game.image = image #This is the line that updates the db. Doesn't go in the response
+    db.session.commit()
+
+    return make_response(response, 200)

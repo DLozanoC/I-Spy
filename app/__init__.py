@@ -4,6 +4,16 @@ from flask_migrate import Migrate
 from dotenv import load_dotenv
 import os
 from flask_cors import CORS
+import boto3
+from config import S3_BUCKET, S3_KEY, S3_SECRET_ACCESS_KEY
+
+# In another tutorial the line is s3.client = boto3.client('s3')
+s3 = boto3.client(
+    's3',
+    aws_access_key_id=S3_KEY,
+    aws_secret_access_key=S3_SECRET_ACCESS_KEY
+)
+print(s3)
 
 db = SQLAlchemy()
 migrate = Migrate()

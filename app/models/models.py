@@ -5,7 +5,7 @@ class Game(db.Model):
     game_id = db.Column(db.Integer, primary_key=True)
     text_challenger = db.Column(db.String)
     characteristic = db.Column(db.String, nullable=False) 
-    #add responder image like challenger has text
+    # image = db.Column(db.String) FINISH THIS LINE
     challenger_id = db.Column(db.Integer, db.ForeignKey('player.player_id'))
     responder_id = db.Column(db.Integer, db.ForeignKey('player.player_id'))
 
@@ -13,8 +13,10 @@ class Game(db.Model):
         return {"game_id": self.game_id,
         "text_challenger": self.text_challenger,
         "characteristic": self.characteristic,
+        # "image": self.image,
         "challenger_id": self.challenger_id,
         # "responder_id": self.responder_id,
+    
         }
     
 class Player(db.Model):

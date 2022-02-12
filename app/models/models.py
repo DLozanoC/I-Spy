@@ -5,7 +5,7 @@ class Game(db.Model):
     game_id = db.Column(db.Integer, primary_key=True)
     text_challenger = db.Column(db.String)
     characteristic = db.Column(db.String, nullable=False) 
-    # image = db.Column(db.String) FINISH THIS LINE
+    image = db.Column(db.String) 
     challenger_id = db.Column(db.Integer, db.ForeignKey('player.player_id'))
     responder_id = db.Column(db.Integer, db.ForeignKey('player.player_id'))
 

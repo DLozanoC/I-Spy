@@ -178,15 +178,17 @@ def rate_friend(challenger_id, game_id):
 @cross_origin()
 def responder_image(responder_id, challenger_id, game_id):
 
-    s3_resource=boto3.resource('s3') #Resources represent an object-oriented interface to Amazon Web Services
-    my_bucket = s3_resource.Bucket(S3_BUCKET)  
-    summaries =  my_bucket.query.all() #used to say my_bucket.object.all()
     game = Game.query.get(game_id)
     request_body = request.get_json()
     responder = Player.query.get(responder_id) 
 
+    s3_resource=boto3.resource('s3') #Resources represent an object-oriented interface to Amazon Web Services
+    my_bucket = s3_resource.Bucket(S3_BUCKET)
+    s3_key = f"{game}.jpeg"
+
     if 'image' in request_body:
         image = request_body['image']
+        my_bucket.put_object(Body=image, Key=s3_key) # Adds object in my bucket. s3_key is a file name
     else:
         return make_response("Make sure you upload your picture", 405)
 
@@ -194,11 +196,12 @@ def responder_image(responder_id, challenger_id, game_id):
         return make_response(f"Game {game_id} not found, can't send your message", 404)
     if responder is None:
         return make_response("Player not found", 404)
-    #add challenger name
+    
+    image_location = f"s3://{S3_BUCKET}/{s3_key}"
     response = {
-        "image": image, #if I use game.text_challenger it returns it as None not string
+        "image": image_location, #No need for FE to access the db to get the url
     }
-    game.image = image #This is the line that updates the db. Doesn't go in the response
+    game.image = image_location #This is the line that updates the db. Doesn't go in the response
     db.session.commit()
 
     return make_response(response, 200)

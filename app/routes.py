@@ -176,7 +176,7 @@ def rate_friend(challenger_id, game_id):
 # PUT game image. Responder's action
 @games_bp.route("/<challenger_id>/<game_id>/image", methods=["PUT"])
 @cross_origin()
-def rate_friend(responder_id, challenger_id, game_id):
+def responder_image(responder_id, challenger_id, game_id):
 
     s3_resource=boto3.resource('s3') #Resources represent an object-oriented interface to Amazon Web Services
     my_bucket = s3_resource.Bucket(S3_BUCKET)  

@@ -195,8 +195,6 @@ def responder_image(challenger_id, game_id):
 
     if game is None:
         return make_response(f"Game {game_id} not found, can't send your message", 404)
-    # if responder is None:
-    #     return make_response("Player not found", 404)
     
     image_location = f"s3://{S3_BUCKET}/{s3_key}"
     response = {

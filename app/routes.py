@@ -4,7 +4,7 @@ from app.models.models import Game
 from app.models.models import Player
 from flask_cors import cross_origin
 import boto3
-from config import S3_BUCKET, S3_KEY, S3_SECRET_ACCESS_KEY
+from config import S3_BUCKET
 
 
 # example_bp = Blueprint('example_bp', __name__)
@@ -176,11 +176,12 @@ def rate_friend(challenger_id, game_id):
 # PUT game image. Responder's action
 @games_bp.route("/<challenger_id>/<game_id>/image", methods=["PUT"])
 @cross_origin()
-def responder_image(responder_id, challenger_id, game_id):
+def responder_image(challenger_id, game_id):
 
     game = Game.query.get(game_id)
     request_body = request.get_json()
-    responder = Player.query.get(responder_id) 
+    # responder = Player.query.get(responder_id) 
+    # challenger = Player.query.get(challenger_id)
 
     s3_resource=boto3.resource('s3') #Resources represent an object-oriented interface to Amazon Web Services
     my_bucket = s3_resource.Bucket(S3_BUCKET)
@@ -194,8 +195,8 @@ def responder_image(responder_id, challenger_id, game_id):
 
     if game is None:
         return make_response(f"Game {game_id} not found, can't send your message", 404)
-    if responder is None:
-        return make_response("Player not found", 404)
+    # if responder is None:
+    #     return make_response("Player not found", 404)
     
     image_location = f"s3://{S3_BUCKET}/{s3_key}"
     response = {

@@ -13,9 +13,9 @@ class Game(db.Model):
         return {"game_id": self.game_id,
         "text_challenger": self.text_challenger,
         "characteristic": self.characteristic,
-        # "image": self.image,
+        "image": self.image,
         "challenger_id": self.challenger_id,
-        # "responder_id": self.responder_id,
+        "responder_id": self.responder_id,
     
         }
     
